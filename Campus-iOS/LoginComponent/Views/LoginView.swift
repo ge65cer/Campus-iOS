@@ -18,10 +18,19 @@ struct LoginView: View {
     @ObservedObject var viewModel: LoginViewModel
     @FocusState private var focusedField: Field?
     
+    @State var showTUMOnline = false
+    
     var body: some View {
             GeometryReader { geo in
                 VStack {
                     VStack(alignment: .center) {
+                        
+                        Button {
+                            showTUMOnline = true
+                        } label: {
+                            Text("Open TUMOnline")
+                        }
+                        
                         Image("logo-blue")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -150,6 +159,9 @@ struct LoginView: View {
             }
             .navigationBarHidden(true)
             .ignoresSafeArea(.keyboard)
+            .sheet(isPresented: $showTUMOnline) {
+                SFSafariViewWrapper(url: URL(string: "https://www.campus.tum.de")!)
+            }
     }
     
     init(model: Model) {

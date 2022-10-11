@@ -94,9 +94,19 @@ struct TokenConfirmationView: View {
             
                 Spacer()
                 
-                Button(action: {
+                Link("Open TUMOnline", destination: URL(string: "https://www.campus.tum.de")!)
+                    .lineLimit(1).font(.body)
+                    .frame(width: 200, height: 48, alignment: .center)
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .background(Color(.tumBlue))
+                    .cornerRadius(10)
+
+                Spacer()
+                
+                Button {
                     self.viewModel.checkAuthorizzation()
-                }) {
+                } label: {
                     Text("Check Authorization").lineLimit(1).font(.body)
                         .frame(width: 200, height: 48, alignment: .center)
                 }
