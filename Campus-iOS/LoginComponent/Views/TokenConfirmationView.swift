@@ -12,6 +12,7 @@ import AVFoundation
 struct TokenConfirmationView: View {
     /// Used for the customized back button
     @Environment(\.presentationMode) var presentationMode
+    @State var showTUMOnline = false
     @State var showBackButtonAlert: Bool = false
     @State var currentStep: Int = 1
     /// The `LoginViewModel` that manages the content of the login screen
@@ -94,29 +95,34 @@ struct TokenConfirmationView: View {
             
                 Spacer()
                 
-                Link("Open TUMOnline", destination: URL(string: "https://www.campus.tum.de")!)
-                    .lineLimit(1).font(.body)
-                    .frame(width: 200, height: 48, alignment: .center)
+                VStack {
+                    Button {
+                        self.showTUMOnline = true
+                    } label: {
+                        Text("Open TUMOnline").lineLimit(1).font(.body)
+                            .frame(width: 200, height: 48, alignment: .center)
+                    }
                     .font(.title)
                     .foregroundColor(.white)
                     .background(Color(.tumBlue))
                     .cornerRadius(10)
-
-                Spacer()
-                
-                Button {
-                    self.viewModel.checkAuthorizzation()
-                } label: {
-                    Text("Check Authorization").lineLimit(1).font(.body)
-                        .frame(width: 200, height: 48, alignment: .center)
+                    
+                    Spacer()
+                    
+                    Button {
+                        self.viewModel.checkAuthorizzation()
+                    } label: {
+                        Text("Check Authorization").lineLimit(1).font(.body)
+                            .frame(width: 200, height: 48, alignment: .center)
+                    }
+                    .alert("Authorization Error", isPresented: self.$viewModel.showTokenAlert) {
+                        Button("OK", role: .cancel) {}
+                    }
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .background(Color(.tumBlue))
+                    .cornerRadius(10)
                 }
-                .alert("Authorization Error", isPresented: self.$viewModel.showTokenAlert) {
-                    Button("OK", role: .cancel) {}
-                }
-                .font(.title)
-                .foregroundColor(.white)
-                .background(Color(.tumBlue))
-                .cornerRadius(10)
                 
                 Spacer()
                 
@@ -156,6 +162,9 @@ struct TokenConfirmationView: View {
         }
         .task {
             await switchSteps()
+        }
+        .sheet(isPresented: $showTUMOnline) {
+            SFSafariViewWrapper(url: URL(string: "https://www.campus.tum.de")!).edgesIgnoringSafeArea(.bottom)
         }
         
         
